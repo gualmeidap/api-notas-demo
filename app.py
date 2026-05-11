@@ -1,104 +1,72 @@
 import streamlit as st
 import pandas as pd
-import time
-from fpdf import FPDF
-import io
+import plotly.express as px
+from src.processor import mock_process_invoice
+from datetime import datetime
 
-# Configuração da página
-st.set_page_config(page_title="Monitor de Faturas - Demo", page_icon="📊")
+# Configuração da Página
+st.set_page_config(page_title="API Notas - Demo", layout="wide")
 
-# --- FUNÇÃO PARA GERAR PDF FICTÍCIO ---
-def gerar_pdf_exemplo():
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(200, 10, "FATURA DE SERVIÇOS - EXEMPLO", ln=True, align="C")
-    pdf.ln(10)
-    
-    pdf.set_font("Arial", "", 12)
-    dados = [
-        ("Fornecedor", "Link Fibra S/A"),
-        ("Número da NF", "2026.00452"),
-        ("Data de Emissão", "01/04/2026"),
-        ("Valor (R$)", "450,00"),
-        ("Data de Vencimento", "15/05/2026"),
-        ("Descrição", "Serviços de Internet Dedicada - Mensalidade Abril"),
-    ]
-    
-    for chave, valor in dados:
-        pdf.set_font("Arial", "B", 12)
-        pdf.cell(50, 10, f"{chave}:", border=0)
-        pdf.set_font("Arial", "", 12)
-        pdf.cell(0, 10, f"{valor}", border=0, ln=True)
-    
-    return pdf.output(dest='S').encode('latin-1')
+# Inicialização do Histórico (Simula Banco de Dados)
+if 'history' not in st.session_state:
+    st.session_state.history = []
+if 'logs' not in st.session_state:
+    st.session_state.logs = []
 
-# --- INTERFACE ---
-st.title("📊 Monitor de Faturas de Fornecedores")
-st.markdown("Esta é uma demonstração do sistema de automação que monitora e-mails e processa faturas.")
+def add_log(message):
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    st.session_state.logs.append(f"[{timestamp}] {message}")
 
+# Sidebar - Informações do Projeto
 with st.sidebar:
-    st.header("Tech Stack")
-    st.info("""
-    - **Linguagem:** Python
-    - **PDF Gen:** FPDF
-    - **OCR:** PDFPlumber / Tesseract
-    - **Interface:** Streamlit
-    """)
+    st.title("🛡️ API Notas Demo")
+    st.info("Esta é uma versão demonstrativa para portfólio. Não requer Docker ou SMTP real.")
+    st.markdown("---")
+    st.write("**Tecnologias:** Python, Streamlit, Mock Logic")
 
-# 1. Geração e Download do PDF
-st.subheader("1. Obtenha o arquivo de teste")
-pdf_bytes = gerar_pdf_exemplo()
-st.download_button(label="📩 Baixar PDF Exemplo", data=pdf_bytes, file_name="fatura_exemplo.pdf", mime="application/pdf")
+# Título Principal
+st.title("📊 Central de Comando - Extração de Notas")
 
-st.divider()
+# Abas Principais
+tab1, tab2, tab3 = st.tabs(["📤 Extração em Tempo Real", "📈 Dashboard", "📜 Logs do Sistema"])
 
-# 2. Área de Upload
-st.subheader("2. Teste o processamento")
-uploaded_file = st.file_uploader("Suba um boleto/fatura em PDF", type="pdf")
-
-if uploaded_file is not None:
-    with st.status("Processando fatura...", expanded=True) as status:
-        st.write("Extraindo dados com OCR...")
-        time.sleep(2)
-        status.update(label="Processamento concluído!", state="complete", expanded=False)
-
-    # Dados extraídos
-    fornecedor = "Link Fibra S/A"
-    vencimento = "15/05/2026"
-    valor_total = "450,00"
-    nf_numero = "2026.00452"
-
-    st.success("✅ Dados extraídos com sucesso!")
+with tab1:
+    st.subheader("Processamento de Documentos")
+    uploaded_file = st.file_uploader("Arraste uma NF (PDF) para simular a extração", type="pdf")
     
-    # Exibição do E-mail Fictício
-    st.subheader("📧 Pré-visualização do E-mail")
-    corpo_email = f"""
-    **Para:** financeiro@empresa.com.br  
-    **Assunto:** Nova Fatura Processada - {fornecedor} (NF: {nf_numero})  
+    if uploaded_file:
+        if st.button("🚀 Processar Agora"):
+            with st.spinner("Extraindo dados via IA..."):
+                result = mock_process_invoice(uploaded_file.name)
+                st.session_state.history.append(result)
+                add_log(f"Sucesso: {result['id']} processada e enviada ao financeiro.")
+                st.success(f"Nota {result['id']} processada com sucesso!")
+                st.json(result)
 
-    ---
-    Prezada equipe do Financeiro,  
+with tab2:
+    st.subheader("Métricas de Operação")
+    if st.session_state.history:
+        df = pd.DataFrame(st.session_state.history)
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.metric("Total Processado", len(df))
+            st.dataframe(df[["id", "fornecedor", "valor", "vencimento"]])
+            
+        with col2:
+            fig = px.bar(df, x="fornecedor", y="valor", title="Volume por Fornecedor")
+            st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("Nenhum dado processado nesta sessão.")
 
-    Uma nova fatura foi identificada e processada automaticamente pelo sistema:  
+with tab3:
+    st.subheader("Terminal Simulado")
+    if st.session_state.logs:
+        for log in reversed(st.session_state.logs):
+            st.code(log)
+    else:
+        st.write("Aguardando atividades...")
 
-    - **Fornecedor:** {fornecedor}  
-    - **Nota Fiscal:** {nf_numero}  
-    - **Valor:** R$ {valor_total}  
-    - **Vencimento:** {vencimento}  
-
-    O arquivo original está em anexo para conferência.  
-
-    Atenciosamente,  
-    **Bot de Monitoramento de Faturas**
-    """
-    
-    st.markdown(
-        f'<div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border: 1px solid #d1d5db;">{corpo_email}</div>', 
-        unsafe_allow_html=True
-    )
-
-    st.write("") # Espaçamento
-    if st.button("Confirmar e Enviar ao Financeiro"):
-        st.balloons()
-        st.success("E-mail enviado com sucesso!")
+# Rodapé de Compliance
+st.markdown("---")
+st.caption("🔒 Dados fictícios utilizados para proteção de sigilo corporativo conforme diretrizes de compliance.")
