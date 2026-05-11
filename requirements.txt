@@ -1,5 +1,5 @@
-streamlit==1.28.0
-pandas==2.1.1
-plotly==5.17.0
-plotly.express==0.4.1
-fpdf==1.7.2
+streamlit
+pandas
+plotly
+plotly.express
+fpdf2
