@@ -69,13 +69,16 @@ with tab1:
         st.write("Não tem uma nota fiscal em PDF agora? Baixe nosso modelo de teste:")
     with col_btn:
         sample_pdf = generate_sample_pdf()
-        st.download_button(
-            label="📄 Baixar NF Exemplo",
-            data=sample_pdf,
-            file_name="nf_exemplo_demo.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
+        if sample_pdf: # Só renderiza o botão se o PDF foi gerado com sucesso
+            st.download_button(
+                label="📄 Baixar NF Exemplo",
+                data=sample_pdf,
+                file_name="nf_exemplo_demo.pdf",
+                mime="application/pdf",
+                use_container_width=True
+            )
+        else:
+            st.error("Erro ao gerar arquivo de teste.")
     
     st.markdown("---") # Divisor visual
     
