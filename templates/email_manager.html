@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Notas | Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<style>
+/* =========================================
+   CSS ORIGINAL PRESERVADO
+   ========================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D0F14;
+  --surface:#131620;
+  --surface2:#181C27;
+  --border:#1F2535;
+  --border2:#2A3045;
+  --accent:#3B82F6;
+  --accent2:#10B981;
+  --accent3:#F59E0B;
+  --accent4:#EF4444;
+  --text:#E8EAF0;
+  --text2:#8B90A0;
+  --text3:#4B5166;
+  --green:#10B981;
+  --red:#EF4444;
+  --amber:#F59E0B;
+  --blue:#3B82F6;
+}
+body{
+  background:var(--bg);
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  padding:0;
+  display:flex;
+  overflow-x: hidden;
+}
+/* Sidebar */
+.sidebar{
+  width:260px;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  padding:24px 0;
+  z-index: 10;
+}
+.brand{
+  padding:0 24px 24px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:1px;
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-icon{
+  width:24px;height:24px;
+  background:linear-gradient(135deg, var(--accent), #60A5FA);
+  border-radius:6px;
+}
+.nav-group{margin-bottom:24px;}
+.nav-label{
+  padding:0 24px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text3);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:12px;
+}
+.nav-item{
+  padding:10px 24px;
+  color:var(--text2);
+  font-size:15px;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:all 0.2s;
+  cursor: pointer;
+}
+.nav-item:hover{
+  background:var(--surface2);
+  color:var(--text);
+}
+.nav-item.active{
+  background:rgba(59,130,246,0.1);
+  color:var(--accent);
+  border-right:3px solid var(--accent);
+}
+
+/* Main */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+.header{
+  height:72px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 32px;
+  background:var(--bg);
+}
+.h-left{display:flex;align-items:center;gap:16px;}
+.breadcrumb{
+  font-size:14px;
+  color:var(--text2);
+}
+.breadcrumb span{color:var(--text);}
+.h-right{display:flex;align-items:center;gap:16px;}
+.search-box{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 16px;
+  font-size:13px;
+  color:var(--text);
+  width:240px;
+  outline:none;
+}
+.search-box:focus{border-color:var(--accent);}
+.avatar{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:var(--surface2);
+  border:1px solid var(--border);
+}
+
+.content{
+  flex:1;
+  padding:32px;
+  overflow-y:auto;
+}
+
+/* Header Section */
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:32px;
+}
+.title-block h1{
+  font-size:26px;
+  font-weight:500;
+  margin-bottom:4px;
+}
+.title-block p{
+  color:var(--text2);
+  font-size:15px;
+}
+.actions{display:flex;gap:12px;}
+.btn{
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.2s;
+  border:none;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  gap:8px;
+}
+.btn-primary{
+  background:var(--accent);
+  color:#fff;
+}
+.btn-primary:hover{background:#2563EB;}
+.btn-secondary{
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.btn-secondary:hover{
+  background:var(--surface2);
+  border-color:var(--border2);
+}
+.btn-danger{
+  background:rgba(239,68,68,0.1);
+  border:1px solid var(--red);
+  color:var(--red);
+}
+.btn-danger:hover{
+  background:var(--red);
+  color:#fff;
+}
+
+/* Cards */
+.metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:24px;
+  margin-bottom:32px;
+}
+.metric-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px;
+}
+.mc-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:16px;
+  color:var(--text2);
+  font-size:13px;
+}
+.mc-value{
+  font-size:32px;
+  font-weight:400;
+  font-family:'IBM Plex Mono', monospace;
+  margin-bottom:8px;
+}
+.mc-footer{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+}
+.trend-up{color:var(--green);}
+.trend-down{color:var(--red);}
+
+/* Table Area */
+.data-panel{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.panel-header{
+  padding:16px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items: center;
+  gap:24px;
+}
+.tab{
+  font-size:13px;
+  color:var(--text2);
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.tab:hover{color:var(--text);}
+.tab.active{
+  background:var(--surface2);
+  color:var(--text);
+  border:1px solid var(--border2);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  text-align:left;
+}
+th{
+  padding:12px 24px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text3);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  border-bottom:1px solid var(--border);
+  background:rgba(13,15,20,0.4);
+}
+td{
+  padding:16px 24px;
+  font-size:14px;
+  border-bottom:1px solid var(--border);
+}
+tr:hover td{
+  background:var(--surface2);
+}
+
+/* Paginação */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px 24px;
+  gap: 16px;
+  border-top: 1px solid var(--border);
+  background: rgba(13,15,20,0.2);
+}
+.page-info {
+  font-size: 13px;
+  color: var(--text2);
+}
+.btn-page {
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+.btn-page:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--accent);
+}
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.card-badge{
+  padding:4px 8px;
+  border-radius:4px;
+  font-size:11px;
+  font-weight:500;
+}
+.cb-green{background:rgba(16,185,129,0.1);color:var(--green);}
+.cb-blue{background:rgba(59,130,246,0.1);color:var(--blue);}
+.cb-amber{background:rgba(245,158,11,0.1);color:var(--amber);}
+.cb-red{background:rgba(239,68,68,0.1);color:var(--red);}
+
+.att-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 8px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:4px;
+  color:var(--text2);
+}
+
+/* =========================================
+   ADAPTAÇÕES FUNCIONAIS (Tabs & Toasts)
+   ========================================= */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.toast {
+    min-width: 300px;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+.toast-success { border-left: 4px solid var(--green); }
+.toast-error { border-left: 4px solid var(--red); }
+.toast-info { border-left: 4px solid var(--blue); }
+
+.status-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+
+.btn-action-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* =========================================
+   NOVOS COMPONENTES (Task 2 & 3)
+   ========================================= */
+
+/* Drag & Drop Manual Upload */
+.upload-zone {
+    border: 2px dashed var(--border2);
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+    background: rgba(19, 22, 32, 0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 24px;
+}
+.upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.05);
+}
+.upload-zone i {
+    width: 48px;
+    height: 48px;
+    color: var(--text2);
+    margin-bottom: 16px;
+}
+.upload-zone p {
+    color: var(--text2);
+    font-size: 15px;
+}
+.upload-zone .highlight {
+    color: var(--accent);
+    font-weight: 500;
+}
+.file-list {
+    margin: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.file-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text);
+}
+.file-item-size {
+    font-size: 12px;
+    color: var(--text2);
+}
+.remove-file {
+    color: var(--text2);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.remove-file:hover {
+    color: var(--red);
+}
+
+/* Offcanvas Logs */
+.offcanvas-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+.offcanvas-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.offcanvas {
+    position: fixed;
+    top: 0; right: -450px;
+    width: 400px; height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 9999;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+.offcanvas.open {
+    right: 0;
+}
+.offcanvas-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.offcanvas-title {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.btn-close:hover { color: var(--text); }
+.offcanvas-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: var(--bg);
+}
+.log-entry {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.log-entry:last-child { border-bottom: none; }
+.log-time { color: var(--text2); display: block; margin-bottom: 4px; font-size: 11px; }
+.log-level-info { color: var(--blue); font-weight: 600; }
+.log-level-error { color: var(--red); font-weight: 600; }
+.log-level-success { color: var(--green); font-weight: 600; }
+.log-message { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"></div>
+    Notas
+  </div>
+  
+  <div class="nav-group">
+    <div class="nav-label">Menu Principal</div>
+    <a href="#" class="nav-item active"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Visão Geral</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Sistema</div>
+    <a href="#" class="nav-item"><i data-lucide="settings" class="w-4 h-4"></i> Configurações</a>
+    <!-- Taks 2: Chamada para abrir o Offcanvas de Logs -->
+    <a href="#" class="nav-item" onclick="toggleLogs()"><i data-lucide="file-text" class="w-4 h-4"></i> Logs de Auditoria</a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="header">
+    <div class="h-left">
+      <div class="breadcrumb">Dashboard <span>/ Visão Geral</span></div>
+    </div>
+    <div class="h-right">
+      <input type="text" class="search-box" placeholder="Buscar documento...">
+      <div class="avatar"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    
+    <div class="section-header">
+      <div class="title-block">
+        <h1>Painel de Controle</h1>
+        <p>Monitoramento e processamento de documentos fiscais</p>
+      </div>
+      <div class="actions">
+        <button id="btn-toggle-monitor" class="btn btn-secondary" onclick="toggleMonitor()">
+          <i data-lucide="toggle-left"></i> Ativar Monitoramento
+        </button>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="mc-header"><span>Total Processados</span> <i data-lucide="check-circle" style="color:var(--text3)"></i></div>
+        <div class="mc-value" id="stat-processed">0</div>
+        <div class="mc-footer"><span class="trend-up">Monitoramento Ativo</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span>E-mails Pendentes</span> <i data-lucide="clock" style="color:var(--text3)"></i></div>
+        <div class="mc-value" id="stat-pending">0</div>
+        <div class="mc-footer"><span style="color:var(--text2)">Aguardando processamento</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="mc-header"><span>Taxa de Sucesso</span> <i data-lucide="activity" style="color:var(--text3)"></i></div>
+        <div class="mc-value" id="stat-success-rate">0%</div>
+        <div class="mc-footer"><span class="trend-up">Última semana</span></div>
+      </div>
+    </div>
+
+    <div class="data-panel">
+      <div class="panel-header" style="justify-content: space-between;">
+        <div style="display: flex; gap: 24px;">
+          <div class="tab active" id="tab-pending-btn" onclick="switchTab('pending')">Fila de Processamento</div>
+          <div class="tab" id="tab-processed-btn" onclick="switchTab('processed')">Histórico de Extração</div>
+          <div class="tab" id="tab-extracted-btn" onclick="switchTab('extracted')">NF-e Extraídas</div>
+          <!-- Task 3: Nova aba de Envio Manual -->
+          <div class="tab" id="tab-manual-btn" onclick="switchTab('manual')">Envio Manual</div>
+        </div>
+        
+        <div style="display: flex; gap: 12px;" id="tab-dynamic-actions">
+            <button id="btn-read-emails" class="btn btn-secondary btn-action-sm" onclick="initiateEmailReading()">
+                <i data-lucide="inbox" style="width: 16px; height: 16px;"></i> Ler E-mails
+            </button>
+            <button id="btn-process-queue" class="btn btn-primary btn-action-sm" onclick="processQueue()">
+                <i data-lucide="zap" style="width: 16px; height: 16px;"></i> Processar Fila
+            </button>
+            
+            <button id="btn-export-excel" class="btn btn-secondary btn-action-sm" onclick="exportarExcel()" style="display: none;">
+                <i data-lucide="download" style="width: 16px; height: 16px;"></i> Exportar Excel
+            </button>
+        </div>
+      </div>
+
+      <div id="pending-tab" class="tab-content active">
+          <table>
+            <thead>
+              <tr>
+                <th>Remetente</th>
+                <th>Assunto</th>
+                <th>Data Recebimento</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="pending-tbody">
+              <tr><td colspan="4" style="text-align: center; color: var(--text2);">Carregando fila...</td></tr>
+            </tbody>
+          </table>
+          <div class="pagination" id="pending-pagination"></div>
+      </div>
+
+      <div id="processed-tab" class="tab-content">
+          <table>
+            <thead>
+              <tr>
+                <th>Remetente</th>
+                <th>Assunto do E-mail</th>
+                <th>Concluído em</th>
+              </tr>
+            </thead>
+            <tbody id="processed-tbody">
+              <tr><td colspan="3" style="text-align: center; color: var(--text2);">Carregando histórico...</td></tr>
+            </tbody>
+          </table>
+          <div class="pagination" id="processed-pagination"></div>
+      </div>
+
+      <div id="extracted-tab" class="tab-content">
+          <table>
+            <thead>
+              <tr>
+                <!-- Task 1: Reordenando colunas (Data de Envio no início, Descrição no final) -->
+                <th>Data de Envio</th>
+                <th>Unidade</th>
+                <th>Fornecedor</th>
+                <th>NF</th>
+                <th>Valor</th>
+                <th>Vencimento</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody id="extracted-tbody">
+              <tr><td colspan="7" style="text-align: center; color: var(--text2);">Carregando notas fiscais...</td></tr>
+            </tbody>
+          </table>
+          <div class="pagination" id="extracted-pagination"></div>
+      </div>
+
+      <!-- Task 3: Estrutura da aba de Envio Manual -->
+      <div id="manual-tab" class="tab-content">
+    
+            <!-- 1. Input do Destinatário -->
+            <div style="padding: 0 24px 24px; margin-bottom: 24px;">
+                <label style="display:block; font-size:14px; font-weight:500; margin-bottom:8px; color:var(--text);">
+                    <i data-lucide="user" style="width:16px; height:16px; display:inline; margin-right:6px;"></i>
+                    E-mail do Destinatário
+                </label>
+                <input type="email" id="recipient-input" placeholder="exemplo@empresa.com" 
+                    style="width:100%; padding:12px 16px; background:var(--surface2); border:1px solid var(--border); 
+                            border-radius:8px; color:var(--text); font-size:14px; outline:none;">
+            </div>
+
+            <!-- 1.1 Campo de Assunto -->
+            <div style="padding: 0 24px 24px; margin-bottom: 24px;">
+                <label style="display:block; font-size:14px; font-weight:500; margin-bottom:8px; color:var(--text);">
+                    <i data-lucide="mail" style="width:16px; height:16px; display:inline; margin-right:6px;"></i>
+                    Assunto do E-mail
+                </label>
+                <input type="text" id="subject-input" placeholder="Processamento de Documentos" 
+                    style="width:100%; padding:12px 16px; background:var(--surface2); border:1px solid var(--border); 
+                            border-radius:8px; color:var(--text); font-size:14px; outline:none;">
+            </div>
+
+            <!-- 1.2 Campo de Mensagem (Opcional) -->
+            <div style="padding: 0 24px 24px; margin-bottom: 24px;">
+                <label style="display:block; font-size:14px; font-weight:500; margin-bottom:8px; color:var(--text);">
+                    <i data-lucide="message-square" style="width:16px; height:16px; display:inline; margin-right:6px;"></i>
+                    Mensagem Personalizada (Opcional)
+                </label>
+                <textarea id="message-input" rows="3" placeholder="Digite uma mensagem personalizada para o destinatário..." 
+                    style="width:100%; padding:12px 16px; background:var(--surface2); border:1px solid var(--border); 
+                            border-radius:8px; color:var(--text); font-size:14px; outline:none; resize:vertical;"></textarea>
+            </div>
+
+            <!-- 2. Área de Upload (Drag and Drop) -->
+            <div class="upload-zone" id="upload-drop-zone" onclick="document.getElementById('manual-file-input').click()">
+                <i data-lucide="upload-cloud"></i>
+                <p>Arraste seus documentos PDF aqui ou <span class="highlight">clique para selecionar</span></p>
+                <input type="file" id="manual-file-input" multiple accept=".pdf,.xml,.jpg,.png" style="display:none;" onchange="handleFileSelect(event)">
+            </div>
+            
+            <!-- 3. Lista de Arquivos com botão de Lixeira -->
+            <div class="file-list" id="manual-file-list">
+                <!-- Arquivos selecionados aparecerão aqui -->
+            </div>
+
+            <!-- ========================================== -->
+            <!-- 4. ÁREA DE PREVIEW DO E-MAIL (DINÂMICO)     -->
+            <!-- ========================================== -->
+            <style>
+                /* Garante que o preview fique invisível quando não há arquivos */
+                .hidden { display: none !important; }
+                
+                /* Estilos do Preview de E-mail */
+                .email-preview {
+                    background: #ffffff;
+                    border-radius: 6px;
+                    border: 1px solid #e5e7eb;
+                    overflow: hidden;
+                    color: #1f2937;
+                    font-family: 'Calibri', 'Arial', sans-serif;
+                    font-size: 14px;
+                }
+                .preview-header {
+                    padding: 12px 16px;
+                    border-bottom: 1px solid #e5e7eb;
+                    background: #f9fafb;
+                }
+                .preview-body {
+                    padding: 20px;
+                    line-height: 1.6;
+                }
+                .preview-field {
+                    font-size: 13px;
+                    margin-bottom: 8px;
+                }
+                .preview-field-label {
+                    font-weight: 600;
+                    color: #4b5563;
+                    display: inline;
+                    margin-right: 8px;
+                }
+                .preview-attachments {
+                    margin: 16px 0;
+                    padding: 12px;
+                    background: #f9fafb;
+                    border-radius: 6px;
+                    border: 1px solid #e5e7eb;
+                }
+                .preview-attachments-title {
+                    font-size: 12px;
+                    color: #4b5563;
+                    margin-bottom: 8px;
+                    font-weight: 500;
+                }
+                .preview-attachments-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+                .preview-attachments-list li {
+                    padding: 6px 0;
+                    color: #6b7280;
+                    font-size: 13px;
+                }
+                .preview-footer {
+                    font-size: 11px;
+                    color: #9ca3af;
+                    margin-top: 20px;
+                    padding-top: 20px;
+                    border-top: 1px solid #e5e7eb;
+                }
+            </style>
+
+            <!-- Preview Container - Escondido por padrão -->
+            <div id="previewContainer" class="hidden" style="margin: 0 24px 24px; padding: 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2);">
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="eye" style="width: 16px; height: 16px;"></i> Pré-visualização do E-mail
+                </h3>
+                
+                <!-- Mockup do E-mail (estilo Microsoft Outlook) -->
+                <div class="email-preview">
+                    <!-- Cabeçalho -->
+                    <div class="preview-header">
+                        <div class="preview-field">
+                            <span class="preview-field-label">Para:</span>
+                            <span id="prevDestinatario" style="color: #2563eb;">Financeiro Padrão</span>
+                        </div>
+                        <div class="preview-field">
+                            <span class="preview-field-label">Assunto:</span>
+                            <span id="prevAssunto">Processamento de Novas Notas Fiscais</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Corpo -->
+                    <div class="preview-body">
+                        <p style="margin-bottom: 12px; color: #1a1a1a;">
+                            Prezados(as), bom dia! Seguem em anexo as notas fiscais selecionadas para processamento.
+                        </p>
+                        
+                        <p style="margin-bottom: 16px; color: #1a1a1a;">
+                            Os arquivos foram enviados automaticamente e entrarão na fila de processamento do sistema de automação.
+                        </p>
+                        
+                        <!-- Lista de Anexos -->
+                        <div class="preview-attachments">
+                            <div class="preview-attachments-title">📎 Anexos:</div>
+                            <ul id="previewAttachmentsList" class="preview-attachments-list">
+                                <!-- JS injeta os anexos aqui -->
+                            </ul>
+                        </div>
+                        
+                        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
+                        
+                        <p class="preview-footer">
+                            ⚙️ Mensagem gerada automaticamente pelo sistema de automação de notas fiscais.<br/>
+                            Por favor, não responda diretamente a este e-mail.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- ========================================== -->
+
+            <!-- 5. Botões de Ação Finais -->
+            <div style="padding: 0 24px 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="clearManualFiles()">Limpar Lista</button>
+                <button id="btn-confirm-send" class="btn btn-primary" style="background: var(--green); border-color: var(--green);" onclick="processManualUpload()">
+                    <i data-lucide="send"></i> Confirmar e Enviar para Processamento
+                </button>
+            </div>
+        </div>
+        
+
+    </div>
+  </div>
+</div>
+
+<!-- Task 2: Offcanvas Logs de Auditoria -->
+<div class="offcanvas-overlay" id="logs-overlay" onclick="toggleLogs()"></div>
+<div class="offcanvas" id="logs-offcanvas">
+    <div class="offcanvas-header">
+        <div class="offcanvas-title">
+            <i data-lucide="terminal" style="color: var(--accent);"></i>
+            Logs de Auditoria
+        </div>
+        <button class="btn-close" onclick="toggleLogs()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="offcanvas-body" id="logs-container">
+        <div style="text-align:center; padding: 20px; color: var(--text2);">Carregando logs...</div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+    // ==========================================
+    // CONFIGURAÇÃO CENTRAL DE ROTAS DO FLASK
+    // ==========================================
+    const API_ROUTES = {
+        health: '/api/health',
+        readEmails: '/api/emails/leitura_automatica',
+        processQueue: '/api/processar_fila',
+        processSingle: '/api/process/single',
+        pending: '/api/emails_pendentes',
+        processed: '/api/emails_processados',
+        extracted: '/api/emails_extraidos',
+        monitorStart: '/api/monitor/start',
+        monitorStop: '/api/monitor/stop',
+        stats: '/api/stats',
+        // Novas rotas para Tasks 2 e 3
+        logs: '/api/logs',
+        processManual: '/api/process/manual' 
+    };
+
+    let isMonitorRunning = false;
+
+    // ==========================================
+    // SISTEMA DE PAGINAÇÃO GLOBAL
+    // ==========================================
+    const ITEMS_PER_PAGE = 10;
+    const dataStore = {
+        pending: { data: [], page: 1 },
+        processed: { data: [], page: 1 },
+        extracted: { data: [], page: 1 }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+        refreshAll();
+        setInterval(refreshAll, 10000); // Polling a cada 10s
+        setupDragAndDrop(); // Inicializa D&D para Envio Manual
+        setupPreviewListeners(); // Inicializa preview em tempo real
+        updatePreview(); // Atualiza preview inicial
+    });
+
+    // Funções de Utilitários
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text.toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function formatarData(dataStr) {
+        if (!dataStr) return "<span style='color:var(--text2)'>-</span>";
+        try {
+            const dateObj = new Date(dataStr);
+            if (isNaN(dateObj.getTime())) {
+                return escapeHtml(dataStr); 
+            }
+            return dateObj.toLocaleDateString('pt-BR', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        } catch (error) {
+            console.error("Erro ao formatar data:", error);
+            return escapeHtml(dataStr);
+        }
+    }
+
+    function showToast(message, type = "info") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        
+        let icon = "info";
+        if (type === "success") icon = "check-circle";
+        if (type === "error") icon = "alert-circle";
+
+        toast.innerHTML = `
+            <i data-lucide="${icon}"></i>
+            <span style="font-size: 14px; font-weight: 500;">${escapeHtml(message)}</span>
+        `;
+        
+        container.appendChild(toast);
+        lucide.createIcons({ root: toast });
+
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // Gerencia a exibição dos botões dependendo da aba selecionada
+    function switchTab(tabId) {
+        ['pending', 'processed', 'extracted', 'manual'].forEach(id => {
+            document.getElementById(id + '-tab').classList.remove('active');
+            document.getElementById('tab-' + id + '-btn').classList.remove('active');
+        });
+        
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+        document.getElementById(`tab-${tabId}-btn`).classList.add('active');
+
+        const exportBtn = document.getElementById('btn-export-excel');
+        const readBtn = document.getElementById('btn-read-emails');
+        const processBtn = document.getElementById('btn-process-queue');
+
+        // Lógica dos botões
+        exportBtn.style.display = tabId === 'extracted' ? 'flex' : 'none';
+        readBtn.style.display = tabId === 'pending' ? 'flex' : 'none';
+        processBtn.style.display = tabId === 'pending' ? 'flex' : 'none';
+    }
+
+    function updateMonitorBtnUI() {
+        const btn = document.getElementById('btn-toggle-monitor');
+        if (isMonitorRunning) {
+            btn.className = "btn btn-danger"; 
+            btn.innerHTML = `<i data-lucide="toggle-right" class="status-pulse"></i> Parar Monitoramento`;
+        } else {
+            btn.className = "btn btn-secondary";
+            btn.innerHTML = `<i data-lucide="toggle-left"></i> Ativar Monitoramento`;
+        }
+        lucide.createIcons();
+    }
+
+    async function toggleMonitor() {
+        const endpoint = isMonitorRunning ? API_ROUTES.monitorStop : API_ROUTES.monitorStart;
+        try {
+            const response = await fetch(endpoint, { method: 'POST' });
+            const data = await response.json();
+            if (data.success || response.ok) {
+                isMonitorRunning = !isMonitorRunning;
+                showToast(data.message || "Status do monitor alterado", "success");
+                updateMonitorBtnUI();
+            } else {
+                showToast("Falha ao alterar estado", "error");
+            }
+        } catch (err) {
+            showToast("Erro de conexão ao alterar monitor", "error");
+            console.error(err);
+        }
+    }
+
+    async function refreshAll() {
+        await Promise.all([
+            loadPending(),
+            loadProcessedEmails(),
+            loadExtractedEmails()
+        ]);
+        await updateStats();
+    }
+
+    async function updateStats() {
+        try {
+            const response = await fetch(API_ROUTES.stats);
+            if (response.ok) {
+                const stats = await response.json();
+                document.getElementById('stat-processed').innerText = stats.processed_count !== undefined ? stats.processed_count : dataStore.processed.data.length;
+                document.getElementById('stat-pending').innerText = stats.pending_count !== undefined ? stats.pending_count : dataStore.pending.data.length;
+                document.getElementById('stat-success-rate').innerText = (stats.success_rate || "100") + "%";
+                return;
+            }
+        } catch (err) {
+            console.log("Endpoint de métricas não encontrado. Usando fallback.");
+        }
+        
+        document.getElementById('stat-processed').innerText = dataStore.processed.data.length;
+        document.getElementById('stat-pending').innerText = dataStore.pending.data.length;
+        let tx = "100%";
+        if (document.getElementById('stat-success-rate').innerText === "0%") {
+            document.getElementById('stat-success-rate').innerText = tx;
+        }
+    }
+
+    async function initiateEmailReading() {
+        showToast("Iniciando leitura de e-mails...", "info");
+        try {
+            const response = await fetch(API_ROUTES.readEmails, { method: 'POST' });
+            const data = await response.json();
+            if (response.ok || data.success) {
+                showToast(data.message || "Leitura finalizada!", "success");
+                refreshAll();
+            } else {
+                showToast(data.message || "Erro ao ler e-mails", "error");
+            }
+        } catch (error) {
+            showToast("Erro ao conectar com servidor", "error");
+        }
+    }
+
+    async function processQueue() {
+        showToast("Processando fila...", "info");
+        try {
+            const response = await fetch(API_ROUTES.processQueue, { method: 'POST' });
+            const data = await response.json();
+            if (response.ok) {
+                showToast(data.message || "Fila processada com sucesso!", "success");
+                refreshAll();
+            } else {
+                showToast(data.error || "Erro ao processar fila", "error");
+            }
+        } catch (error) {
+            showToast("Erro de conexão ao processar", "error");
+        }
+    }
+
+    async function processSingle(emailId) {
+        showToast("Processando e-mail específico...", "info");
+        try {
+            const response = await fetch(`${API_ROUTES.processSingle}?id=${emailId}`, { method: 'POST' });
+            const data = await response.json();
+            if (response.ok) {
+                showToast("E-mail processado com sucesso!", "success");
+                refreshAll();
+            } else {
+                showToast(data.error || "Falha no processamento", "error");
+            }
+        } catch (error) {
+            showToast("Erro técnico ao processar", "error");
+        }
+    }
+
+    // ==========================================
+    // LÓGICA DE RENDENRIZAÇÃO COM PAGINAÇÃO
+    // ==========================================
+    
+    function renderPagination(type) {
+        const totalItems = dataStore[type].data.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+        const container = document.getElementById(`${type}-pagination`);
+        const currentPage = dataStore[type].page;
+        
+        if (currentPage > totalPages) {
+            dataStore[type].page = totalPages;
+        }
+
+        container.innerHTML = `
+            <div class="page-info">Página ${dataStore[type].page} de ${totalPages} (Total: ${totalItems})</div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-page" ${dataStore[type].page <= 1 ? 'disabled' : ''} onclick="changePage('${type}', -1)">Anterior</button>
+                <button class="btn-page" ${dataStore[type].page >= totalPages ? 'disabled' : ''} onclick="changePage('${type}', 1)">Próxima</button>
+            </div>
+        `;
+    }
+
+    function changePage(type, direction) {
+        dataStore[type].page += direction;
+        if (type === 'pending') renderPendingTable();
+        if (type === 'processed') renderProcessedTable();
+        if (type === 'extracted') renderExtractedTable();
+    }
+
+    function getPaginatedData(type) {
+        const startIndex = (dataStore[type].page - 1) * ITEMS_PER_PAGE;
+        return dataStore[type].data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }
+
+    async function loadPending() {
+        try {
+            const response = await fetch(API_ROUTES.pending);
+            if (response.ok) {
+                dataStore.pending.data = await response.json();
+                renderPendingTable();
+            }
+        } catch (error) {
+            document.getElementById('pending-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--red);">Erro ao carregar fila.</td></tr>`;
+        }
+    }
+
+    function renderPendingTable() {
+        const tbody = document.getElementById('pending-tbody');
+        const emails = getPaginatedData('pending');
+        
+        if (dataStore.pending.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--text2);">Nenhum e-mail pendente na fila.</td></tr>`;
+            document.getElementById('pending-pagination').innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        emails.forEach(email => {
+            html += `
+            <tr>
+                <td style="color:var(--text)">${escapeHtml(email.sender)}</td>
+                <td>${escapeHtml(email.subject)}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${formatarData(email.date || email.data_recebimento)}</td>
+                <td>
+                    <button onclick="processSingle('${email.id}')" class="btn btn-primary btn-action-sm">
+                        Processar
+                    </button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+        renderPagination('pending');
+    }
+
+    async function loadProcessedEmails() {
+        try {
+            const response = await fetch(API_ROUTES.processed);
+            if (response.ok) {
+                dataStore.processed.data = await response.json();
+                renderProcessedTable();
+            }
+        } catch (error) {
+            document.getElementById('processed-tbody').innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--red);">Erro ao carregar histórico.</td></tr>`;
+        }
+    }
+
+    function renderProcessedTable() {
+        const tbody = document.getElementById('processed-tbody');
+        const emails = getPaginatedData('processed');
+
+        if (dataStore.processed.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--text2);">Nenhum registro encontrado.</td></tr>`;
+            document.getElementById('processed-pagination').innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        emails.forEach(email => {
+            html += `
+            <tr>
+                <td style="color:var(--text)">${escapeHtml(email.sender || email.remetente || "N/A")}</td>
+                <td>${escapeHtml(email.subject || email.assunto || "N/A")}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${formatarData(email.date || email.data_processamento)}</td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+        renderPagination('processed');
+    }
+
+    async function loadExtractedEmails() {
+        try {
+            const response = await fetch(API_ROUTES.extracted);
+            if (response.ok) {
+                dataStore.extracted.data = await response.json();
+                renderExtractedTable();
+            }
+        } catch (error) {
+            document.getElementById('extracted-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);">Erro ao carregar NF-es extraídas.</td></tr>`;
+        }
+    }
+
+    function renderExtractedTable() {
+        const tbody = document.getElementById('extracted-tbody');
+        const nfs = getPaginatedData('extracted');
+
+        if (dataStore.extracted.data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text2);">Nenhuma nota fiscal extraída encontrada.</td></tr>`;
+            document.getElementById('extracted-pagination').innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        // Task 1: Reordenando colunas para a renderização
+        nfs.forEach(nf => {
+            let data_envio = nf.data_envio || "N/A";
+            let unidade = nf.unidade || "N/A";
+            let fornecedor = nf.fornecedor || "Desconhecido";
+            let numero_nf = nf.numero_nf || nf.nf || "N/A";
+            let valor = nf.valor || "0,00";
+            let descricao = nf.descricao || "-";
+
+            html += `
+            <tr>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);">${formatarData(data_envio)}</td>
+                <td style="color:var(--text); font-weight: 500;">${escapeHtml(unidade)}</td>
+                <td style="color:var(--text);">${escapeHtml(fornecedor)}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);">${escapeHtml(numero_nf)}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--accent); font-weight:500;">${escapeHtml(valor)}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2);">${formatarData(nf.vencimento)}</td>
+                <td style="color:var(--text2); font-size:13px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(descricao)}">${escapeHtml(descricao)}</td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+        renderPagination('extracted');
+    }
+
+    function exportarExcel() {
+        const activeTab = document.querySelector('.tab-content.active');
+        if (!activeTab || activeTab.id !== 'extracted-tab') return;
+        
+        const table = activeTab.querySelector('table');
+        if (!table) return;
+
+        try {
+            const wb = XLSX.utils.table_to_book(table, {sheet: "Notas Extraídas"});
+            XLSX.writeFile(wb, 'notas_fiscais_extraidas.xlsx');
+            showToast("Download do Excel concluído com sucesso!", "success");
+        } catch (error) {
+            console.error("Erro ao exportar Excel:", error);
+            showToast("Erro ao tentar exportar arquivo", "error");
+        }
+    }
+
+    // ==========================================
+    // TASK 2: LOGS DE AUDITORIA (OFFCANVAS)
+    // ==========================================
+    function toggleLogs() {
+        const offcanvas = document.getElementById('logs-offcanvas');
+        const overlay = document.getElementById('logs-overlay');
+        
+        if (offcanvas.classList.contains('open')) {
+            offcanvas.classList.remove('open');
+            overlay.classList.remove('show');
+        } else {
+            offcanvas.classList.add('open');
+            overlay.classList.add('show');
+            fetchLogs(); // Carrega os logs ao abrir
+        }
+    }
+
+    async function fetchLogs() {
+        const container = document.getElementById('logs-container');
+        container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text2);"><i data-lucide="loader" class="status-pulse"></i> Buscando registros...</div>';
+        lucide.createIcons();
+
+        try {
+            const response = await fetch(API_ROUTES.logs);
+            if (!response.ok) throw new Error('Rota de logs indisponível');
+            const logs = await response.json();
+            
+            if (!logs || logs.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text2);">Nenhum log de auditoria encontrado.</div>';
+                return;
+            }
+
+            let html = '';
+            logs.forEach(log => {
+                const levelClass = log.level === 'ERROR' ? 'log-level-error' : (log.level === 'SUCCESS' ? 'log-level-success' : 'log-level-info');
+                html += `
+                <div class="log-entry">
+                    <span class="log-time">${formatarData(log.timestamp)}</span>
+                    <span class="${levelClass}">[${escapeHtml(log.level)}]</span>
+                    <span class="log-message">${escapeHtml(log.message)}</span>
+                </div>`;
+            });
+            container.innerHTML = html;
+        } catch (error) {
+
+        }
+    }
+
+    // ==========================================
+    // TASK 3: ENVIO MANUAL (DRAG & DROP)
+    // ==========================================
+    let manualFiles = [];
+
+    // --- FUNÇÃO: Atualiza o preview com dados reais ---
+    function updatePreview() {
+        // 1. Atualiza o assunto no preview
+        const assunto = document.getElementById("subject-input").value || "Processamento de Novas Notas Fiscais";
+        document.getElementById("prevAssunto").textContent = assunto;
+        
+        // 2. Atualiza a lista de anexos no preview
+        const attachmentsList = document.getElementById("previewAttachmentsList");
+        attachmentsList.innerHTML = '';
+        
+        manualFiles.forEach((file, index) => {
+            const sizeKB = (file.size / 1024).toFixed(1);
+            attachmentsList.innerHTML += `
+                <li>
+                    <i data-lucide="file" style="width: 14px; height: 14px; display: inline; vertical-align: middle; margin-right: 6px; color: var(--accent);"></i>
+                    <span>${escapeHtml(file.name)}</span>
+                    <span style="color: #9ca3af; margin-left: auto; font-size: 11px;">${sizeKB} KB</span>
+                </li>
+            `;
+        });
+        
+        lucide.createIcons({ root: attachmentsList });
+    }
+
+    // --- FUNÇÃO: Atualiza o e-mail no preview em tempo real ---
+    function setupPreviewListeners() {
+        const recipientInput = document.getElementById("recipient-input");
+        const prevDestinatario = document.getElementById("prevDestinatario");
+        const subjectInput = document.getElementById("subject-input");
+        const prevAssunto = document.getElementById("prevAssunto");
+        const messageInput = document.getElementById("message-input");
+        const prevMensagem = document.getElementById("prevMensagem");
+
+        if (recipientInput && prevDestinatario) {
+            // Toda vez que o usuário digitar uma letra, o preview atualiza
+            recipientInput.addEventListener("input", (e) => {
+                prevDestinatario.textContent = e.target.value || "financeiro@empresa.com";
+                updatePreview(); // Atualiza o preview com novos dados
+            });
+        }
+
+        if (subjectInput && prevAssunto) {
+            subjectInput.addEventListener("input", (e) => {
+                prevAssunto.textContent = e.target.value || "[Automação TI] Faturas de Fornecedores de Internet";
+                updatePreview(); // Atualiza o preview com novos dados
+            });
+        }
+
+        if (messageInput && prevMensagem) {
+            messageInput.addEventListener("input", (e) => {
+                prevMensagem.textContent = e.target.value || "Seguem em anexo os documentos para processamento na plataforma.";
+                updatePreview(); // Atualiza o preview com novos dados
+            });
+        }
+        
+        // Atualiza o preview inicial
+        updatePreview();
+    }
+
+    // Recomendo chamar essa função no carregamento da página junto com o Drag and Drop
+    // document.addEventListener("DOMContentLoaded", () => { setupDragAndDrop(); setupPreviewListeners(); });
+
+    function setupDragAndDrop() {
+        const dropZone = document.getElementById('upload-drop-zone');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        }, false);
+    }
+
+    function handleFileSelect(e) {
+        handleFiles(e.target.files);
+    }
+
+    function handleFiles(files) {
+        if (!files || files.length === 0) return;
+        
+        for (let i = 0; i < files.length; i++) {
+            manualFiles.push(files[i]);
+        }
+        renderManualFileList();
+    }
+
+    // --- FUNÇÃO MODIFICADA: Agora alimenta a lista e o preview ---
+    function renderManualFileList() {
+        const listDiv = document.getElementById('manual-file-list');
+        const previewContainer = document.getElementById('previewContainer');
+
+        listDiv.innerHTML = '';
+        
+        if (manualFiles.length === 0) {
+            if (previewContainer) previewContainer.classList.add('hidden');
+            return;
+        }
+
+        if (previewContainer) previewContainer.classList.remove('hidden');
+
+        manualFiles.forEach((file, index) => {
+            const sizeKB = (file.size / 1024).toFixed(1);
+            
+            // 1. Renderiza na sua lista normal (Layout original)
+            listDiv.innerHTML += `
+            <div class="file-item">
+                <div class="file-item-info">
+                    <i data-lucide="file" style="color: var(--accent); width: 18px; height: 18px;"></i>
+                    <div>
+                        <div>${escapeHtml(file.name)}</div>
+                        <div class="file-item-size">${sizeKB} KB</div>
+                    </div>
+                </div>
+                <button class="btn-close remove-file" onclick="removeManualFile(${index})">
+                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                </button>
+            </div>`;
+        });
+        
+        // 2. Atualiza o preview com os novos arquivos (tabela + anexos)
+        updatePreview();
+        
+        lucide.createIcons();
+    }
+
+    function removeManualFile(index) {
+        manualFiles.splice(index, 1);
+        renderManualFileList(); // Como o render foi atualizado, remover o arquivo já remove do preview e esconde se zerar!
+    }
+
+    function clearManualFiles() {
+        manualFiles = [];
+        const fileInput = document.getElementById('manual-file-input');
+        if (fileInput) fileInput.value = ""; 
+        renderManualFileList(); // Chama o render para sumir com o preview
+    }
+
+    async function processManualUpload() {
+        const recipientInput = document.getElementById("recipient-input");
+        const subjectInput = document.getElementById("subject-input");
+        const messageInput = document.getElementById("message-input");
+        
+        if (!recipientInput || !recipientInput.value) {
+            showToast("Por favor, insira o e-mail do destinatário", "error");
+            return;
+        }
+        
+        const recipient = recipientInput.value;
+        const subject = subjectInput.value || "Processamento de Documentos";
+        const message = messageInput.value || "Seguem em anexo os documentos para processamento na plataforma.";
+
+        if (manualFiles.length === 0) {
+            showToast("Selecione pelo menos um documento para processar", "error");
+            return;
+        }
+
+        showToast("Enviando documentos para processamento...", "info");
+        
+        const formData = new FormData();
+        manualFiles.forEach((file, index) => {
+            formData.append(`file_${index}`, file);
+        });
+        
+        formData.append("destinatario", recipient);
+        formData.append("assunto", subject);
+        formData.append("mensagem", message);
+
+        try {
+            const response = await fetch(API_ROUTES.processManual, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            
+            if (response.ok || data.success) {
+                showToast("Documentos processados com sucesso!", "success");
+                clearManualFiles(); // Isso agora vai limpar a tela e fechar o preview automaticamente!
+                refreshAll(); 
+                switchTab('extracted'); 
+            } else {
+                showToast(data.message || "Falha no processamento manual", "error");
+            }
+        } catch (error) {
+            console.error("Erro de conexão na rota manual:", error);
+            showToast("Erro ao comunicar com o servidor (Rota /api/process/manual existe?)", "error");
+        }
+    }
+</script>
+</body>
+</html>
