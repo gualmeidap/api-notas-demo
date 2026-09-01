@@ -33,28 +33,65 @@ Este é o ambiente de demonstração *white-label* do sistema de **Automação F
 
 ## 🖼️ Telas
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/capturas/01-login.png" alt="Tela de login"><br><sub><b>Login</b> — autenticação do ambiente de demonstração</sub></td>
-    <td width="50%"><img src="docs/capturas/02-dashboard.png" alt="Painel de controle"><br><sub><b>Visão Geral</b> — fila de processamento, indicadores e NF-e extraídas</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/capturas/03-historico.png" alt="Histórico de processamento"><br><sub><b>Histórico</b> — documentos concluídos e excluídos, com restauração</sub></td>
-    <td><img src="docs/capturas/04-envio-manual.png" alt="Envio manual de documentos"><br><sub><b>Envio Manual</b> — upload de PDF/XML e agrupamento por fornecedor</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/capturas/05-fornecedores.png" alt="Gestão de fornecedores"><br><sub><b>Fornecedores</b> — dicionário de chaves por unidade</sub></td>
-    <td><img src="docs/capturas/06-descricoes.png" alt="Descrições e normalizações"><br><sub><b>Descrições</b> — normalização de nomes e descrição padrão</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/capturas/07-relatorio.png" alt="Relatório de fornecedores"><br><sub><b>Relatório</b> — quem envia Nota Fiscal e quem envia Boleto</sub></td>
-    <td><img src="docs/capturas/08-configuracoes.png" alt="Configurações do sistema"><br><sub><b>Configurações</b> — roteamento de notas e serviços do robô</sub></td>
-  </tr>
-  <tr>
-    <td><img src="docs/capturas/09-usuarios.png" alt="Gerenciamento de usuários"><br><sub><b>Usuários</b> — perfis e restrição por caixa (RBAC)</sub></td>
-    <td><img src="docs/capturas/10-auditoria.png" alt="Logs de auditoria"><br><sub><b>Auditoria</b> — trilha das ações administrativas</sub></td>
-  </tr>
-</table>
+<img src="docs/capturas/02-dashboard.png" alt="Painel de controle da automação fiscal">
+
+<sub><b>Visão Geral</b> — fila de processamento, indicadores do mês e NF-e extraídas.</sub>
+
+As demais telas:
+
+<details>
+<summary><b>Login</b> — autenticação do ambiente de demonstração</summary>
+<br>
+<img src="docs/capturas/01-login.png" alt="Tela de login">
+</details>
+
+<details>
+<summary><b>Histórico</b> — documentos concluídos e excluídos, com restauração</summary>
+<br>
+<img src="docs/capturas/03-historico.png" alt="Histórico de processamento">
+</details>
+
+<details>
+<summary><b>Envio Manual</b> — upload de PDF/XML e agrupamento por fornecedor</summary>
+<br>
+<img src="docs/capturas/04-envio-manual.png" alt="Envio manual de documentos">
+</details>
+
+<details>
+<summary><b>Fornecedores</b> — dicionário de chaves por unidade</summary>
+<br>
+<img src="docs/capturas/05-fornecedores.png" alt="Gestão de fornecedores">
+</details>
+
+<details>
+<summary><b>Descrições</b> — normalização de nomes e descrição padrão</summary>
+<br>
+<img src="docs/capturas/06-descricoes.png" alt="Descrições e normalizações">
+</details>
+
+<details>
+<summary><b>Relatório</b> — quem envia Nota Fiscal e quem envia Boleto</summary>
+<br>
+<img src="docs/capturas/07-relatorio.png" alt="Relatório de fornecedores">
+</details>
+
+<details>
+<summary><b>Configurações</b> — roteamento de notas e serviços do robô</summary>
+<br>
+<img src="docs/capturas/08-configuracoes.png" alt="Configurações do sistema">
+</details>
+
+<details>
+<summary><b>Usuários</b> — perfis e restrição por caixa (RBAC)</summary>
+<br>
+<img src="docs/capturas/09-usuarios.png" alt="Gerenciamento de usuários">
+</details>
+
+<details>
+<summary><b>Auditoria</b> — trilha das ações administrativas</summary>
+<br>
+<img src="docs/capturas/10-auditoria.png" alt="Logs de auditoria">
+</details>
 
 ## 🚀 Como Executar Localmente
 
