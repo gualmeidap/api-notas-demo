@@ -199,6 +199,23 @@ function formatarData(dataStr) {
     }
 }
 
+function mesAnoDe(dataStr) {
+    // Aceita ISO (2026-09-01T10:00:00) e dd/mm/aaaa, devolvendo "mm/aaaa".
+    if (!dataStr || dataStr === "N/A") return null;
+
+    const iso = dataStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return `${iso[2]}/${iso[1]}`;
+
+    const br = dataStr.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (br) return `${br[2]}/${br[3]}`;
+
+    const dateObj = new Date(dataStr);
+    if (!isNaN(dateObj.getTime())) {
+        return String(dateObj.getMonth() + 1).padStart(2, '0') + '/' + dateObj.getFullYear();
+    }
+    return null;
+}
+
 function getStatusBadge(status) {
     let cssClass = "status-pending";
     let icon = "clock";
@@ -658,15 +675,7 @@ function getFilteredData(type) {
     
     // Month filter for extracted
     if (type === 'extracted' && extractedCurrentMonth !== "all") {
-        dataset = dataset.filter(nf => {
-            if (!nf.data_envio || nf.data_envio === "N/A") return false;
-            const parts = nf.data_envio.split('/');
-            if (parts.length >= 3) {
-                const monthYear = `${parts[1]}/${parts[2].substring(0,4)}`;
-                return monthYear === extractedCurrentMonth;
-            }
-            return false;
-        });
+        dataset = dataset.filter(nf => mesAnoDe(nf.data_envio) === extractedCurrentMonth);
     }
     
     // Global search
@@ -944,12 +953,8 @@ function populateExtractedMonthFilter() {
     months.add(extractedCurrentMonth);
     
     dataStore.extracted.data.forEach(nf => {
-        if (nf.data_envio && nf.data_envio !== "N/A") {
-            const parts = nf.data_envio.split('/');
-            if (parts.length >= 3) {
-                months.add(`${parts[1]}/${parts[2].substring(0,4)}`);
-            }
-        }
+        const mesAno = mesAnoDe(nf.data_envio);
+        if (mesAno) months.add(mesAno);
     });
     
     const options = ['<option value="all">Todos os Meses</option>'];
@@ -1535,7 +1540,7 @@ function renderVendors(vendors) {
     let htmlUb = '';
     let htmlFilial = '';
     
-    // UB units não contém barras (/UF). Ex: Matriz, Filial Norte, Filial Sul
+    // Unidades da Matriz não contêm barra (/UF); as demais são exibidas na aba Filiais.
     
     for (const [key, data] of Object.entries(vendors)) {
         const unidade = data.unidade || "";
@@ -1881,9 +1886,9 @@ async function initializeUser() {
                     <div style="display: flex; align-items: center; gap: 8px; margin-right: 16px; background: var(--surface2); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); height: 32px;">
                         <i data-lucide="inbox" style="width: 14px; height: 14px; color: var(--text2);"></i>
                         <select id="admin-mailbox-switcher" onchange="onMailboxChange()" style="background: transparent; border: none; color: var(--text); font-size: 12px; font-weight: 600; outline: none; cursor: pointer; height: 100%; width: 100%; padding: 0;">
-                            <option value="contratos.ti.homolog@filial.demo.com.br" selected>contratos.ti.homolog@filial.demo.com.br</option>
-                            <option value="">Visão Geral (Todas as Caixas)</option>
-                            <option value="contratos.ti.sistemas@empresa.demo.com.br">contratos.ti.sistemas@empresa.demo.com.br</option>
+                            <option value="" selected>Visão Geral (Todas as Caixas)</option>
+                            <option value="compras@empresa.demo.com.br">compras@empresa.demo.com.br</option>
+                            <option value="fiscal@empresa.demo.com.br">fiscal@empresa.demo.com.br</option>
                             <option value="contratos.ti@filial.demo.com.br">contratos.ti@filial.demo.com.br</option>
                         </select>
                     </div>
@@ -2004,13 +2009,6 @@ async function solicitarNFFaltante(emailId) {
     }
 }
 
-// Injeção automática de banner para identificar visualmente o ambiente de Desenvolvimento (Porta 8080)
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.port === '8080') {
-        const devBanner = document.createElement('div');
-        devBanner.className = 'dev-environment-banner';
-        devBanner.innerHTML = '⚠️ <b>AMBIENTE DE DESENVOLVIMENTO (PORTA 8080)</b> — Alterações aqui afetam apenas o banco de testes de Dev.';
-        document.body.insertBefore(devBanner, document.body.firstChild);
-    }
-});
+// O banner de ambiente de desenvolvimento não se aplica a esta demo:
+// todos os dados são fictícios e vivem apenas em memória.
 

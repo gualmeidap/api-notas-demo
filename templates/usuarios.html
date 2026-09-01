@@ -145,7 +145,7 @@
                 <div class="form-group">
                     <label>Nível de Acesso (Role)</label>
                     <select id="role" class="form-input" required onchange="toggleMailboxField()">
-                        <option value="tecnico">Administrador (Restrito à Caixa)</option>
+                        <option value="tecnico">Operador (Restrito à Caixa)</option>
                         <option value="admin">Administrador Global (Acesso Total)</option>
                     </select>
                 </div>
@@ -153,9 +153,9 @@
                     <label>Caixa Permitida (Filtro)</label>
                     <select id="allowed_mailbox" class="form-input">
                         <option value="">Selecione uma caixa...</option>
-                        <option value="contratos.ti.sistemas@empresa.demo.com.br">contratos.ti.sistemas@empresa.demo.com.br</option>
+                        <option value="compras@empresa.demo.com.br">compras@empresa.demo.com.br</option>
+                        <option value="fiscal@empresa.demo.com.br">fiscal@empresa.demo.com.br</option>
                         <option value="contratos.ti@filial.demo.com.br">contratos.ti@filial.demo.com.br</option>
-                        <option value="contratos.ti.homolog@filial.demo.com.br">contratos.ti.homolog@filial.demo.com.br</option>
                     </select>
                 </div>
             </div>
@@ -231,7 +231,7 @@
             users.forEach(u => {
                 const roleBadge = u.role === 'admin' 
                     ? '<span class="status-badge" style="background:var(--blue-light);color:var(--primary);">Administrador Global</span>' 
-                    : '<span class="status-badge" style="background:var(--bg);color:var(--text2);">Administrador</span>';
+                    : '<span class="status-badge" style="background:var(--bg);color:var(--text2);">Operador</span>';
                     
                 const mailbox = u.allowed_mailbox ? u.allowed_mailbox : (u.role === 'admin' ? '<i>Todas as caixas</i>' : '<i>Nenhuma</i>');
                 
