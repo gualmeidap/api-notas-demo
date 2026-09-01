@@ -14,7 +14,7 @@ Este é o ambiente de demonstração *white-label* do sistema de **Automação F
 <br>
 
 <div align="center">
-  <img src="static/images/demo_dashboard.gif" alt="Dashboard Mockup" width="800" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+  <img src="docs/capturas/fluxo-automacao.gif" alt="Dashboard Mockup" width="800" style="border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
 </div>
 
 ---
@@ -23,8 +23,38 @@ Este é o ambiente de demonstração *white-label* do sistema de **Automação F
 
 - 📥 **Monitoramento de Caixa de Entrada**: Simula a busca de e-mails em caixas corporativas (ex. `compras`, `fiscal`).
 - 🤖 **Extração Automática (OCR Fake)**: Demonstra o carregamento e extração de dados estruturados (CNPJ, Valor, Fornecedor) a partir de anexos PDF e XML.
-- 🏢 **Gestão de Fornecedores**: Interface para visualizar lista de fornecedores cadastrados.
+- 📤 **Envio Manual**: Upload de PDF/XML com separação e roteamento por fornecedor.
+- 🏢 **Gestão de Fornecedores**: Dicionário de chaves por unidade, com extração assistida a partir de um PDF.
+- 📖 **Descrições e Normalizações**: Mapeia razões sociais divergentes para uma chave única e define a descrição padrão de cada fornecedor.
+- 📊 **Relatório de Fornecedores**: Consolida quem envia Nota Fiscal e quem envia Boleto.
+- 👥 **Controle de Acesso (RBAC)**: Administrador global e operadores restritos a uma caixa.
+- 🛡️ **Auditoria e Logs**: Trilha das ações administrativas e log de execução do robô.
 - ⚙️ **Workflow de Aprovação**: Ações simuladas de encaminhamento para o setor fiscal, aprovação de despesas e exclusão.
+
+## 🖼️ Telas
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/capturas/01-login.png" alt="Tela de login"><br><sub><b>Login</b> — autenticação do ambiente de demonstração</sub></td>
+    <td width="50%"><img src="docs/capturas/02-dashboard.png" alt="Painel de controle"><br><sub><b>Visão Geral</b> — fila de processamento, indicadores e NF-e extraídas</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/capturas/03-historico.png" alt="Histórico de processamento"><br><sub><b>Histórico</b> — documentos concluídos e excluídos, com restauração</sub></td>
+    <td><img src="docs/capturas/04-envio-manual.png" alt="Envio manual de documentos"><br><sub><b>Envio Manual</b> — upload de PDF/XML e agrupamento por fornecedor</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/capturas/05-fornecedores.png" alt="Gestão de fornecedores"><br><sub><b>Fornecedores</b> — dicionário de chaves por unidade</sub></td>
+    <td><img src="docs/capturas/06-descricoes.png" alt="Descrições e normalizações"><br><sub><b>Descrições</b> — normalização de nomes e descrição padrão</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/capturas/07-relatorio.png" alt="Relatório de fornecedores"><br><sub><b>Relatório</b> — quem envia Nota Fiscal e quem envia Boleto</sub></td>
+    <td><img src="docs/capturas/08-configuracoes.png" alt="Configurações do sistema"><br><sub><b>Configurações</b> — roteamento de notas e serviços do robô</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/capturas/09-usuarios.png" alt="Gerenciamento de usuários"><br><sub><b>Usuários</b> — perfis e restrição por caixa (RBAC)</sub></td>
+    <td><img src="docs/capturas/10-auditoria.png" alt="Logs de auditoria"><br><sub><b>Auditoria</b> — trilha das ações administrativas</sub></td>
+  </tr>
+</table>
 
 ## 🚀 Como Executar Localmente
 
@@ -60,16 +90,25 @@ uvicorn main:app --reload --port 8080
 
 ```bash
 api-notas-demo/
-├── main.py                # Arquivo principal com a API FastAPI e as rotas "Mock"
-├── requirements.txt       # Dependências do projeto (fastapi, uvicorn, jinja2)
+├── main.py                # API FastAPI: rotas da interface + endpoints "Mock"
+├── requirements.txt       # Dependências (fastapi, uvicorn, jinja2, python-multipart)
+├── render.yaml            # Blueprint de deploy no Render
 ├── templates/             # HTMLs da interface do usuário (White-label)
-│   ├── notas.html
-│   ├── fornecedores.html
-│   └── ...
-└── static/                # Assets estáticos 
-    ├── css/
-    ├── js/
-    └── images/
+│   ├── notas.html         # Visão geral / fila de processamento
+│   ├── historico.html     # Histórico de documentos
+│   ├── manual.html        # Envio manual
+│   ├── fornecedores.html  # Dicionário de fornecedores
+│   ├── descricoes.html    # Descrições e normalizações
+│   ├── relatorio.html     # Relatório de fornecedores
+│   ├── configuracoes.html # Parâmetros do sistema
+│   ├── usuarios.html      # Controle de acesso
+│   ├── auditoria.html     # Trilha de auditoria
+│   └── logs.html          # Log do robô
+├── static/                # Assets estáticos
+│   ├── css/
+│   ├── js/
+│   └── images/
+└── docs/capturas/         # Capturas de tela usadas neste README
 ```
 
 ## 🔒 Aviso de Segurança e Privacidade
