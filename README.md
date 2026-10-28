@@ -1,3 +1,5 @@
+> **English summary:** public demo of a tax-document automation system I built (Python, FastAPI, Tesseract OCR). It reads supplier invoices and payment slips from corporate mailboxes, extracts structured data, and routes low-confidence extractions to a human review queue instead of guessing. The production version is private; this demo runs on in-memory fake data. Live demo: https://api-notas-demo.onrender.com/ (free tier, first load can take up to a minute).
+
 <div align="center">
   
 # 📄 Automação Fiscal (Ambiente de Demonstração)
